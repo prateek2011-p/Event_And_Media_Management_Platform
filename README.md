@@ -290,3 +290,5 @@ Optional deliverables included:
 - API documentation
 - PWA/offline setup
 - Test script
+live demo deployed link:
+https://event-and-media-management-platform-k1yl.onrender.com
