@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#7c3aed">
+    <title>Event and Media Management</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">EM</div>
+          <div>
+            <h1>Event Media Hub</h1>
+            <p>Club albums, AI search, sharing</p>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Primary">
+          <button class="nav-item active" data-view="dashboard" title="Dashboard">
+            <span class="icon">D</span><span>Dashboard</span>
+          </button>
+          <button class="nav-item" data-view="upload" title="Upload media">
+            <span class="icon">U</span><span>Upload</span>
+          </button>
+          <button class="nav-item" data-view="discover" title="Face discovery">
+            <span class="icon">F</span><span>Face Finder</span>
+          </button>
+          <button class="nav-item" data-view="analytics" title="Analytics">
+            <span class="icon">A</span><span>Analytics</span>
+          </button>
+        </nav>
+
+        <div class="cloud-card">
+          <span class="label">Cloud Integration</span>
+          <strong id="cloudProvider">AWS S3</strong>
+          <div class="cloud-detail">
+            <span>Provider</span>
+            <b id="cloudProviderValue">AWS S3</b>
+          </div>
+          <div class="cloud-detail">
+            <span>Bucket Name</span>
+            <b id="cloudBucket">Checking</b>
+          </div>
+          <div class="cloud-detail">
+            <span>Connection Status</span>
+            <b id="cloudMode">Checking</b>
+          </div>
+          <small id="cloudText">AWS S3 readiness</small>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="search-row">
+            <label class="search-box">
+              <span>Search</span>
+              <input id="searchInput" type="search" placeholder="Try: stage, crowd, Mira, Spring, 2026-04">
+            </label>
+            <select id="tagFilter" title="Filter by tag">
+              <option value="">All tags</option>
+            </select>
+            <input id="dateFilter" type="date" title="Filter by upload date">
+          </div>
+          <div class="user-controls">
+            <select id="userSelect" title="Switch role"></select>
+            <button id="manageUsersButton" class="ghost-button hidden" type="button">Manage people</button>
+            <button id="notificationButton" class="icon-button" title="Notifications">Bell<span id="notificationBadge"></span></button>
+          </div>
+        </header>
+
+        <section id="notificationPanel" class="notification-panel hidden" aria-live="polite"></section>
+
+        <section class="view active" id="dashboardView">
+          <div class="hero-panel">
+            <div>
+              <p class="eyebrow">Project meaning</p>
+              <h2>One platform for club event photos and videos</h2>
+              <p>
+                Admins create events, photographers upload media, club members access private albums,
+                viewers browse public media, and everyone can search, like, comment, share, download,
+                tag users, and find their own photos.
+              </p>
+            </div>
+            <div class="hero-steps">
+              <span>1. Create event</span>
+              <span>2. Create album</span>
+              <span>3. Upload media</span>
+              <span>4. Search and interact</span>
+            </div>
+          </div>
+
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Event Management</p>
+              <h2>Events and albums</h2>
+            </div>
+            <div class="toolbar">
+              <select id="eventSort" title="Sort events">
+                <option value="date">Sort by date</option>
+                <option value="name">Sort by event name</option>
+                <option value="category">Sort by category</option>
+              </select>
+              <button id="newAlbumButton" class="secondary-button">New album</button>
+              <button id="newEventButton" class="primary-button">New event</button>
+            </div>
+          </div>
+
+          <div id="statsGrid" class="stats-grid"></div>
+          <div id="eventGrid" class="event-grid"></div>
+          <div id="eventBrowser" class="event-browser hidden"></div>
+
+          <div class="section-head compact">
+            <div>
+              <p class="eyebrow">Gallery</p>
+              <h2 id="galleryTitle">Latest media</h2>
+              <p id="gallerySubtitle" class="caption">Showing all visible media. Use search, tag, and date filters to narrow results.</p>
+            </div>
+          </div>
+          <div id="gallery" class="gallery"></div>
+          <div id="gallerySentinel" class="gallery-sentinel">
+            <span id="galleryStatus">Scroll to load more media</span>
+            <button id="loadMoreButton" class="ghost-button" type="button">Load more</button>
+          </div>
+        </section>
+
+        <section class="view" id="uploadView">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Media Upload System</p>
+              <h2>Bulk upload with preview</h2>
+            </div>
+          </div>
+          <form id="uploadForm" class="upload-layout">
+            <div id="dropZone" class="drop-zone">
+              <input id="fileInput" type="file" accept="image/*,video/*" multiple>
+              <div class="drop-icon">Upload</div>
+              <strong>Drop photos and videos here</strong>
+              <span>Choose multiple files. Preview appears below before publishing.</span>
+            </div>
+            <div class="upload-panel">
+              <label>Event<select id="uploadEvent"></select></label>
+              <label>Album<select id="uploadAlbum"></select></label>
+              <label>Visibility
+                <select id="uploadVisibility">
+                  <option value="public">Public media</option>
+                  <option value="private">Private media</option>
+                </select>
+              </label>
+              <label>Manual tags<input id="manualTags" type="text" placeholder="dance, crowd, stage, music"></label>
+              <div class="upload-status">
+                <span class="label">Selected files</span>
+                <strong id="uploadCount">0</strong>
+                <small id="uploadSummary">Ready for images or videos.</small>
+              </div>
+              <button class="primary-button" type="submit">Publish selected</button>
+            </div>
+          </form>
+          <div id="previewGrid" class="preview-grid"></div>
+        </section>
+
+        <section class="view" id="discoverView">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Face Recognition</p>
+              <h2>Find matching photos</h2>
+            </div>
+          </div>
+          <div class="face-shell">
+            <div class="face-card">
+              <div id="selfiePreview" class="face-preview">
+                <span>Reference preview</span>
+              </div>
+              <label>Reference selfie<input id="selfieInput" type="file" accept="image/*"></label>
+              <label>Face profile<select id="faceUser"></select></label>
+              <button id="findFacesButton" class="primary-button">Find matches</button>
+            </div>
+            <div class="face-results-panel">
+              <div class="face-score-card">
+                <span class="label">Match confidence</span>
+                <strong id="faceConfidence">--</strong>
+                <small id="faceResultText">Choose a profile to scan visible media.</small>
+                <button id="clearFaceMatchesButton" class="ghost-button hidden" type="button">Clear matches</button>
+              </div>
+              <div id="faceMatches" class="gallery compact-gallery"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="analyticsView">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Bonus Feature</p>
+              <h2>Analytics dashboard</h2>
+            </div>
+          </div>
+          <div id="analyticsBoard" class="analytics-board"></div>
+          <div id="analyticsDetails" class="analytics-details"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="eventDialog">
+      <form id="eventForm" method="dialog" class="dialog-form">
+        <h2 id="eventDialogTitle">Create event</h2>
+        <input id="eventId" name="id" type="hidden">
+        <label>Name<input name="name" required placeholder="Freshers Night"></label>
+        <label>Category<input name="category" required placeholder="Party"></label>
+        <label>Date<input name="date" type="date" required></label>
+        <label>Location<input name="location" placeholder="Auditorium"></label>
+        <label>Description<textarea name="description" rows="3" placeholder="Welcome party photos and videos"></textarea></label>
+        <label>Visibility
+          <select name="visibility">
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </label>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel" type="button" id="cancelEventButton">Cancel</button>
+          <button id="eventSubmitButton" class="primary-button" value="default">Create event</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="albumDialog">
+      <form id="albumForm" method="dialog" class="dialog-form">
+        <h2>Create album</h2>
+        <label>Event<select name="eventId" id="albumEvent"></select></label>
+        <label>Album title<input name="title" required placeholder="Main Stage"></label>
+        <label>Description<textarea name="description" rows="3" placeholder="Stage photos and crowd videos"></textarea></label>
+        <fieldset class="collaborator-field">
+          <legend>Collaborators</legend>
+          <div id="albumCollaborators" class="collaborator-list"></div>
+        </fieldset>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel" type="button" id="cancelAlbumButton">Cancel</button>
+          <button class="primary-button" value="default">Create album</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="collaboratorDialog">
+      <form id="collaboratorForm" method="dialog" class="dialog-form">
+        <h2>Manage collaborators</h2>
+        <input id="collaboratorAlbumId" name="albumId" type="hidden">
+        <p id="collaboratorAlbumName" class="caption"></p>
+        <div id="collaboratorOptions" class="collaborator-list"></div>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel" type="button" id="cancelCollaboratorButton">Cancel</button>
+          <button class="primary-button" value="default">Save collaborators</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="userDialog">
+      <form id="userForm" method="dialog" class="dialog-form">
+        <h2>Manage people</h2>
+        <div id="userDirectory" class="user-directory"></div>
+        <div class="user-add-grid">
+          <label>Name<input name="name" required placeholder="New member name"></label>
+          <label>Role
+            <select name="role">
+              <option value="Club Member">Club Member</option>
+              <option value="Photographer">Photographer</option>
+              <option value="Viewer">Viewer</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </label>
+        </div>
+        <div class="dialog-actions">
+          <button class="ghost-button" value="cancel" type="button" id="cancelUserButton">Cancel</button>
+          <button class="primary-button" value="default">Add person</button>
+        </div>
+      </form>
+    </dialog>
+
+    <section id="shareModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
+      <div class="share-modal">
+        <div class="modal-title-row">
+          <div>
+            <p class="eyebrow">Share Media</p>
+            <h2 id="shareModalTitle">Share media</h2>
+          </div>
+          <button id="closeShareModal" class="icon-button" type="button" title="Close share modal">X</button>
+        </div>
+        <label class="share-link-field">
+          <span>Generated Share Link</span>
+          <input id="shareLinkInput" type="text" readonly>
+        </label>
+        <button id="copyShareLink" class="primary-button" type="button">Copy Link</button>
+        <div class="qr-panel">
+          <canvas id="shareQrCanvas" width="188" height="188" aria-label="QR share code"></canvas>
+          <small id="copyShareFeedback">QR code ready</small>
+        </div>
+        <div>
+          <span class="label">Share Via</span>
+          <div id="socialShareLinks" class="social-share-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mediaViewer" class="media-viewer hidden" role="dialog" aria-modal="true" aria-label="Fullscreen media viewer" tabindex="-1">
+      <button id="mediaViewerClose" class="viewer-close" type="button" title="Close viewer">X</button>
+      <div id="mediaViewerContent" class="media-viewer-content"></div>
+      <div class="media-viewer-caption">
+        <strong id="mediaViewerTitle"></strong>
+        <span id="mediaViewerMeta"></span>
+      </div>
+    </section>
+
+    <template id="mediaCardTemplate">
+      <article class="media-card">
+        <div class="media-visual">
+          <div class="media-thumb"></div>
+          <span class="match-badge hidden"></span>
+        </div>
+        <div class="media-actions">
+          <button data-action="like" title="Like" type="button">
+            <span class="action-icon">&#9829;</span>
+            <span class="action-label">Like</span>
+            <span class="action-count"></span>
+          </button>
+          <button data-action="comment-focus" title="Comment" type="button">
+            <span class="action-icon">&#128172;</span>
+            <span class="action-label">Comment</span>
+          </button>
+          <button data-action="share" title="Share" type="button">
+            <span class="action-icon">&#8599;</span>
+            <span class="action-label">Share</span>
+          </button>
+          <button data-action="favourite" title="Save to favourites" type="button">
+            <span class="action-icon">&#128278;</span>
+            <span class="action-label">Save</span>
+          </button>
+          <button data-action="download" title="Download with watermark" type="button">
+            <span class="action-icon">&#8595;</span>
+            <span class="action-label">Download</span>
+          </button>
+        </div>
+        <div class="media-body">
+          <div class="media-title-row">
+            <h3></h3>
+            <span class="privacy-pill"></span>
+          </div>
+          <p class="media-meta"></p>
+          <p class="caption"></p>
+          <div class="tag-row"></div>
+          <form class="tag-form">
+            <select name="userId"></select>
+            <button title="Tag selected user">Tag user</button>
+          </form>
+          <div class="comment-list"></div>
+          <form class="comment-form">
+            <input name="comment" placeholder="Comment: Great shot for the club page!">
+            <button title="Post comment">Post</button>
+          </form>
+        </div>
+      </article>
+    </template>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

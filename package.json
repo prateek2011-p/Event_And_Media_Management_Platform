@@ -1,0 +1,19 @@
+{
+  "name": "event-media-platform",
+  "version": "1.0.0",
+  "description": "Event and media management platform for clubs, photographers, and members.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/smoke.test.js"
+  },
+  "keywords": [
+    "events",
+    "media",
+    "albums",
+    "pwa",
+    "hackathon"
+  ],
+  "author": "",
+  "license": "MIT"
+}
