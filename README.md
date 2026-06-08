@@ -245,24 +245,24 @@ The platform includes a personalized photo discovery feature that helps users lo
 
 ## Overview
 
-To ensure scalability and industry-level storage management, the platform is designed to support integration with Amazon Simple Storage Service (AWS S3).
+To ensure scalability and efficient media management, the platform is designed to support integration with Amazon Simple Storage Service (AWS S3).
 
-Instead of storing large media files directly on the server, AWS S3 can be used as a cloud-based object storage system for storing images and videos securely and efficiently.
+Currently, media files are stored locally for demonstration purposes. In a production environment, uploaded photos and videos can be stored securely in AWS S3 while only metadata is maintained in the database.
+
+This approach improves scalability, reliability, and performance while reducing server storage requirements.
 
 ---
 
 ## Why AWS S3?
 
-Traditional local storage becomes difficult to manage when thousands of photos and videos are uploaded across multiple events.
-
 AWS S3 provides:
 
-* Highly scalable storage
-* High durability and availability
-* Secure media management
-* Fast media retrieval
-* Reduced server load
-* Cost-effective storage architecture
+- Highly scalable object storage
+- High durability and availability
+- Secure media management
+- Fast retrieval of images and videos
+- Reduced server storage load
+- Production-ready cloud infrastructure
 
 ---
 
@@ -270,98 +270,184 @@ AWS S3 provides:
 
 ```text
 Photographer Uploads Media
-        │
-        ▼
-Node.js Backend
-        │
-        ▼
-AWS S3 Bucket
-        │
-        ▼
-Media Metadata Database
-        │
-        ▼
-Users Access Media
+          │
+          ▼
+     Node.js Backend
+          │
+          ▼
+      AWS S3 Bucket
+          │
+          ▼
+ Metadata Stored in Database
+          │
+          ▼
+     Users Access Media
 ```
 
 ---
 
-## Integration Architecture
+## Step 1: Create an S3 Bucket
 
-### Upload Phase
+Create an S3 bucket in AWS.
 
-* Media is uploaded by photographers.
-* Metadata is processed.
-* AI tags are generated.
-* Media is prepared for cloud storage.
-
-### Cloud Storage Phase
-
-Media can be stored in an AWS S3 bucket using an organized structure.
+Example:
 
 ```text
-college-event-media/
+college-event-media
+```
 
-├── Freshers-Night/
-│   ├── Main-Stage/
-│   │   ├── photo1.jpg
-│   │   ├── photo2.jpg
-│   │   └── video1.mp4
-│
-├── Cultural-Fest/
-│   └── Dance-Competition/
-│
-└── Workshops/
+It is recommended to keep **Block Public Access** enabled unless media is intentionally served through signed URLs or a CDN.
+
+---
+
+## Step 2: Configure CORS
+
+Configure CORS on the bucket to allow browser-based uploads.
+
+```json
+[
+  {
+    "AllowedHeaders": ["*"],
+    "AllowedMethods": ["GET", "PUT", "POST"],
+    "AllowedOrigins": [
+      "http://127.0.0.1:4173",
+      "http://localhost:4173"
+    ],
+    "ExposeHeaders": ["ETag"]
+  }
+]
 ```
 
 ---
 
-## Security Features
+## Step 3: Configure IAM Permissions
 
-### IAM Permissions
+Create an IAM User or IAM Role with the following permissions:
 
-AWS Identity and Access Management (IAM) enables secure access control.
+- s3:PutObject
+- s3:GetObject
+- s3:DeleteObject
 
-Supported permissions:
-
-* PutObject
-* GetObject
-* DeleteObject
-
-### Bucket Security
-
-* Restricted access policies
-* Controlled media visibility
-* Public access blocked by default
-* Secure API-based access
+These permissions allow the application to upload, retrieve, and delete media securely.
 
 ---
 
-## Advantages of Cloud Integration
+## Step 4: Configure Environment Variables
 
-### Scalability
+Store AWS credentials using environment variables.
 
-Supports large-scale media management without increasing server storage requirements.
+```powershell
+$env:S3_BUCKET="college-event-media"
 
-### Reliability
+$env:AWS_REGION="ap-south-1"
 
-AWS infrastructure provides high durability and availability.
+$env:AWS_ACCESS_KEY_ID="your-access-key"
 
-### Performance
-
-Efficient media retrieval and storage management.
-
-### Cost Optimization
-
-Pay only for resources used.
-
-### Production Readiness
-
-Designed for deployment in real-world organizational environments.
+$env:AWS_SECRET_ACCESS_KEY="your-secret-key"
+```
 
 ---
 
-## Cloud Readiness Status
+## Step 5: Install AWS SDK
+
+Install the AWS SDK for JavaScript.
+
+```bash
+npm install @aws-sdk/client-s3
+```
+
+---
+
+## Step 6: Initialize AWS S3 Client
+
+Import and configure the S3 client in the backend.
+
+```javascript
+const {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand
+} = require("@aws-sdk/client-s3");
+
+const s3 = new S3Client({
+  region: process.env.AWS_REGION
+});
+```
+
+---
+
+## Step 7: Upload Media to S3
+
+Convert uploaded media into a buffer and upload it to AWS S3.
+
+```javascript
+const [meta, base64] = body.dataUrl.split(",");
+
+const contentType =
+  meta.match(/data:(.*);base64/)?.[1] ||
+  "application/octet-stream";
+
+const s3Buffer = Buffer.from(base64, "base64");
+
+const key =
+  `events/${event.id}/albums/${album.id}/${Date.now()}-${body.title}`;
+
+await s3.send(
+  new PutObjectCommand({
+    Bucket: process.env.S3_BUCKET,
+    Key: key,
+    Body: s3Buffer,
+    ContentType: contentType
+  })
+);
+```
+
+---
+
+## Step 8: Store Metadata
+
+Instead of storing the complete media file in the database, only metadata is stored.
+
+```javascript
+{
+  storageKey: key,
+  eventId: event.id,
+  albumId: album.id,
+  mediaType: contentType
+}
+```
+
+This significantly reduces database size and improves performance.
+
+---
+
+## Step 9: Retrieve Media
+
+When users access media:
+
+1. Metadata is fetched from the database.
+2. The S3 object key is identified.
+3. Media is retrieved using secure URLs.
+4. Access permissions are verified before serving content.
+
+---
+
+## Step 10: Delete Media
+
+When media or albums are deleted, the corresponding S3 objects can also be removed.
+
+```javascript
+await s3.send(
+  new DeleteObjectCommand({
+    Bucket: process.env.S3_BUCKET,
+    Key: storageKey
+  })
+);
+```
+
+---
+
+## Cloud Readiness Features
 
 The platform includes:
 
@@ -375,6 +461,17 @@ The platform includes:
 
 ✅ Production-Ready Storage Design
 
+---
+
+## Benefits of AWS S3 Integration
+
+- Scalable cloud storage
+- High durability and availability
+- Secure media access
+- Reduced server storage requirements
+- Faster media management
+- Industry-standard cloud architecture
+- Production-ready deployment support
 ---
 
 # 🖼️ Dynamic Watermarking System
