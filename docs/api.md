@@ -1,66 +1,178 @@
 # API Documentation
 
-All endpoints accept `X-User-Id` to simulate the active authenticated user.
+## Authentication
 
-## GET `/api/bootstrap`
+The platform uses role-based access control. All API requests support an `X-User-Id` header to simulate the currently authenticated user.
 
-Returns the current user, visible events, albums, media, notifications, settings, and analytics.
+---
 
-## GET `/api/search?q=&tag=&uploader=&date=`
+## Bootstrap API
 
-Searches visible media by event name, title, tags, uploader, and upload date.
+### GET /api/bootstrap
 
-## GET `/api/cloud/status`
+Returns all data required to initialize the application, including:
 
-Returns S3 readiness and local demo storage mode.
+* Current user information
+* Events
+* Albums
+* Media
+* Notifications
+* Platform settings
+* Analytics data
 
-## POST `/api/events`
+**Access:** All Users
 
-Admin only. Creates a new event.
+---
 
-```json
-{
-  "name": "Freshers Night",
-  "category": "Party",
-  "date": "2026-06-12",
-  "visibility": "public",
-  "location": "Auditorium",
-  "description": "Welcome event"
-}
-```
+## Search API
 
-## POST `/api/albums`
+### GET /api/search
 
-Admin and Photographer only. Creates an album under an event.
+Provides advanced media search functionality.
 
-## POST `/api/media`
+Users can search media by:
 
-Admin and Photographer only. Creates media metadata and stores demo upload content.
+* Event name
+* Media title
+* Tags
+* Upload date
+* Uploader name
 
-## POST `/api/media/:id/like`
+**Access:** All Users
 
-Toggles like and notifies the uploader.
+---
 
-## POST `/api/media/:id/favourite`
+## Cloud Status API
 
-Toggles favourite for the active user.
+### GET /api/cloud/status
 
-## POST `/api/media/:id/comment`
+Returns the current cloud storage status and indicates whether AWS S3 integration is configured.
 
-Adds a comment and notifies the uploader.
+**Access:** All Users
 
-## POST `/api/media/:id/tag`
+---
 
-Tags a user and sends a notification.
+## Event Management APIs
 
-## POST `/api/media/:id/share`
+### POST /api/events
 
-Creates a share URL for QR sharing.
+Creates a new event with metadata such as name, category, date, visibility, location, and description.
 
-## POST `/api/face-match`
+**Access:** Admin Only
 
-Returns visible media whose face tokens match the selected reference profile.
+---
 
-## POST `/api/notifications/read`
+## Album Management APIs
 
-Marks the current user's notifications as read.
+### POST /api/albums
+
+Creates a new album within an event.
+
+Albums help organize media into logical collections.
+
+**Access:** Admin, Photographer
+
+---
+
+## Media Management APIs
+
+### POST /api/media
+
+Uploads media and creates associated metadata.
+
+Supports:
+
+* Photos
+* Videos
+* Bulk uploads
+* Album association
+* AI-generated tags
+* AI-generated captions
+
+**Access:** Admin, Photographer
+
+---
+
+## Social Interaction APIs
+
+### POST /api/media/:id/like
+
+Allows users to like or unlike media content.
+
+Automatically updates engagement statistics and generates notifications.
+
+**Access:** Authenticated Users
+
+---
+
+### POST /api/media/:id/favourite
+
+Adds or removes media from a user's favourites collection.
+
+**Access:** Authenticated Users
+
+---
+
+### POST /api/media/:id/comment
+
+Allows users to comment on media content.
+
+Comment activity generates notifications for content owners.
+
+**Access:** Authenticated Users
+
+---
+
+### POST /api/media/:id/tag
+
+Allows users to tag other members in media.
+
+Tagged users receive notifications.
+
+**Access:** Authenticated Users
+
+---
+
+### POST /api/media/:id/share
+
+Generates a shareable media link and QR code for easy distribution.
+
+**Access:** Authenticated Users
+
+---
+
+## Face Finder API
+
+### POST /api/face-match
+
+Provides personalized media discovery by matching media against the selected reference profile.
+
+Matching results are displayed in a dedicated personalized section.
+
+**Access:** Authenticated Users
+
+---
+
+## Notification APIs
+
+### POST /api/notifications/read
+
+Marks all notifications for the current user as read.
+
+**Access:** Authenticated Users
+
+---
+
+## API Highlights
+
+* Role-Based Access Control
+* Event Management
+* Album Management
+* Media Upload & Retrieval
+* AI-Powered Search
+* Social Interactions
+* Notification System
+* QR-Based Media Sharing
+* Face Finder Support
+* Cloud Storage Integration
+* Analytics Support
