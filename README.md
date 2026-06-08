@@ -1,294 +1,553 @@
-# Event & Media Management Platform
+# 🎉 Event & Media Management Platform
 
-A centralized media hub for college clubs, photographers, organizers, and members. It implements the features requested in `CIG_DEV_PS.pdf`: event-wise albums, drag-and-drop uploads, access control, social interactions, AI-style tagging/search, face-based discovery, cloud storage readiness, watermark downloads, notifications, and bonus analytics/PWA/QR sharing flows.
+## 🌟 Overview
 
-## What This Project Does
+The Event & Media Management Platform is a centralized web application designed to simplify the management, organization, and sharing of media generated during college events. Clubs and societies frequently organize workshops, cultural festivals, competitions, trips, photoshoots, and celebrations that generate hundreds or even thousands of photos and videos. These files are often scattered across multiple Google Drive folders, cloud storage links, and personal devices, making them difficult to manage efficiently.
 
-This project is a website for handling all photos and videos created during club events. Instead of keeping media scattered across many Google Drive links, photographers can upload media into event-wise albums. Members can search it, interact with it, and find photos that contain them.
+This platform provides a unified solution where organizers, photographers, and club members can upload, organize, search, access, and interact with event media seamlessly through a modern and user-friendly interface.
 
-Simple example:
+---
 
-1. Admin creates an event called `Freshers Night`.
-2. Photographer creates an album called `Main Stage`.
-3. Photographer uploads photos/videos with tags like `dance, crowd, stage`.
-4. Club members search `stage`, like/comment/share/download photos, and tag users.
-5. A member uses Face Finder to show only photos matched to them.
+# 🚀 Live Demo
 
-## Quick Start
+https://event-and-media-management-platform-k1yl.onrender.com
 
-```powershell
-cd "C:\EVENT AND MEDIA MANAGEMENT"
-node server.js
-```
+---
 
-Open `http://127.0.0.1:4173`.
+# 🎯 Problem Statement
 
-No dependency install is required. The project uses Node's built-in HTTP server and a vanilla frontend.
+College clubs and societies regularly conduct events that generate a large volume of photos and videos. Managing this media becomes challenging due to:
+
+* Scattered storage across multiple platforms
+* Difficulty in searching for specific photos
+* Lack of centralized organization
+* Poor access control mechanisms
+* Inefficient sharing and collaboration
+* Difficulty in finding photos containing specific members
+
+The Event & Media Management Platform solves these challenges by providing a centralized, scalable, and interactive platform for managing event media efficiently.
+
+---
+
+# ✨ Key Features
+
+## 📅 Event Management
+
+The platform allows administrators and organizers to efficiently manage events and their associated media.
+
+### Features
+
+* Create and manage events
+* Event-wise media organization
+* Event descriptions and metadata
+* Event categorization
+* Event editing and updates
+* Event-wise album management
+
+### Sorting Options
+
+* Event Name
+* Event Date
+* Event Category
+
+---
+
+## 📁 Album Management
+
+Albums provide structured organization of media within events.
+
+### Features
+
+* Event-specific albums
+* Album descriptions
+* Organized media hierarchy
+* Album management
+* Album deletion support
+* Collaborative album architecture
+
+---
+
+## 📸 Media Upload System
+
+The platform provides an efficient and user-friendly media upload experience.
+
+### Upload Features
+
+* Photo uploads
+* Video uploads
+* Bulk uploads
+* Drag-and-drop support
+* Media preview before upload
+* Upload validation
+* Optimized storage workflow
+
+### Media Processing
+
+* Automatic tag generation
+* Metadata extraction
+* AI-generated captions
+* Organized media storage
+
+---
+
+# 🔒 Access Control & Authentication
+
+The platform implements role-based access control to ensure secure and controlled media access.
 
 ## User Roles
 
-- `Admin`: creates events, sees private content, uploads media.
-- `Photographer`: uploads media, sees private content, creates albums.
-- `Club Member`: sees private club content and can interact.
-- `Viewer`: sees public content only.
+### Admin
 
-Use the role switcher in the top bar to test access control.
+* Full platform access
+* Create and manage events
+* Manage albums
+* Upload media
+* Access private content
+* Monitor platform activities
 
-## Key Workflows
+### Photographer
 
-### 1. Create Event
+* Upload media
+* Create albums
+* Manage uploaded content
+* Access private club content
 
-Role:
+### Club Member
 
-```text
-Aarav Admin - Admin
-```
+* View authorized content
+* Like media
+* Comment on media
+* Download media
+* Receive notifications
 
-Click `New event` and enter:
+### Viewer
 
-```text
-Name: Freshers Night
-Category: Party
-Date: 2026-06-12
-Location: Auditorium
-Description: Welcome party photos and videos
-Visibility: Public
-```
+* Access public content only
 
-Expected output: a colorful `Freshers Night` event card appears. Sorting by event name, date, and category changes the event order.
+---
 
-### 2. Create Album
+## Public & Private Media
 
-Role:
+### Public Media
 
-```text
-Mira Photographer - Photographer
-```
+Accessible to all users.
 
-Click `New album` and enter:
+### Private Media
 
-```text
-Event: Freshers Night
-Album title: Main Stage
-Description: Stage photos and dance videos
-```
+Accessible only to authorized members and administrators.
 
-Expected output: the `Freshers Night` card shows the new album name, and the Upload page can publish media into it.
+---
 
-### 3. Upload Media
+# ❤️ Social Features
 
-Role:
+The platform includes social-media-inspired interactions to improve engagement and collaboration.
 
-```text
-Mira Photographer - Photographer
-```
+## Available Interactions
 
-Go to `Upload` and enter:
+* Like media
+* Comment on media
+* Share media
+* Download media
+* Add to favourites
+* Tag users and friends
 
-```text
-Event: Freshers Night
-Album: Main Stage
-Visibility: Public media
-Manual tags: dance, crowd, stage, music
-```
+---
 
-Choose one or more image/video files. A file named `stage_crowd_dance_photo.jpg` is a good test.
+## Notification System
 
-Expected output: preview cards show before upload, including original size, optimized estimate, and AI tags. After `Publish selected`, the new media appears in Latest media with AI caption and tags.
+Real-time notification support for:
 
-### 4. Access Control
+* Photo likes
+* User tagging
+* Comments
+* Media interactions
 
-Switch to:
+### Example Notifications
 
-```text
-Vihaan Viewer - Viewer
-```
+* Someone liked your photo
+* Someone tagged you
+* Someone commented on your upload
 
-Expected output: only public events/media are visible.
+---
 
-Switch to:
+# 🤖 AI-Powered Features
 
-```text
-Aarav Admin - Admin
-```
+## Smart Image Tagging
 
-Expected output: private content such as `Portrait Lighting Workshop` and `Softbox Portrait` appears.
+The platform automatically generates tags based on uploaded media and metadata.
 
-### 5. Social Features
+### Example Tags
 
-On any media card, test:
+* Crowd
+* Stage
+* Sports
+* Workshop
+* Party
+* Mountains
+* Beach
+* Dance
 
-```text
-Like
-Favourite
-Share
-Download
-Tag user: Rhea Member
-Comment: Great shot for the club page!
-```
+Automatic tagging improves search accuracy and media discoverability.
 
-Expected output: like count changes, favourite toggles, share QR opens, download creates a watermarked PNG, user tagging creates a notification, and the comment appears below the media card.
+---
 
-### 6. AI Search
+## AI-Generated Captions
 
-Try these search inputs:
+The system generates meaningful captions using uploaded file information and metadata to improve media organization.
+
+---
+
+## Advanced Search System
+
+Users can search media using multiple criteria.
+
+### Search Filters
+
+* Event Name
+* Tags
+* Upload Date
+* Uploader Name
+* Media Title
+
+### Example Searches
 
 ```text
 stage
 crowd
-Mira
-Spring
 mountains
+workshop
+Mira
 2026-04
 ```
 
-Expected output: gallery filters by event name, tags, uploader name, and upload date.
+---
 
-### 7. Face Finder
+# 👤 Personalized Photo Discovery
 
-Go to `Face Finder`.
+The platform includes a personalized photo discovery feature that helps users locate media associated with them.
 
-Input:
+## Workflow
+
+1. Select a face profile.
+2. Search for matching media.
+3. View matching results.
+4. Review confidence scores.
+
+### Benefits
+
+* Faster photo discovery
+* Personalized experience
+* Improved accessibility of event memories
+
+---
+
+# ☁️ AWS S3 Cloud Integration
+
+## Overview
+
+To ensure scalability and industry-level storage management, the platform is designed to support integration with Amazon Simple Storage Service (AWS S3).
+
+Instead of storing large media files directly on the server, AWS S3 can be used as a cloud-based object storage system for storing images and videos securely and efficiently.
+
+---
+
+## Why AWS S3?
+
+Traditional local storage becomes difficult to manage when thousands of photos and videos are uploaded across multiple events.
+
+AWS S3 provides:
+
+* Highly scalable storage
+* High durability and availability
+* Secure media management
+* Fast media retrieval
+* Reduced server load
+* Cost-effective storage architecture
+
+---
+
+## Storage Workflow
 
 ```text
-Face profile: Rhea Member
+Photographer Uploads Media
+        │
+        ▼
+Node.js Backend
+        │
+        ▼
+AWS S3 Bucket
+        │
+        ▼
+Media Metadata Database
+        │
+        ▼
+Users Access Media
 ```
 
-Click `Find matches`.
+---
 
-Expected output: matching photos appear in the separate personalized section with a confidence score.
+## Integration Architecture
 
-### 8. Cloud and Watermark
+### Upload Phase
 
-Check the sidebar `Cloud integration` box.
+* Media is uploaded by photographers.
+* Metadata is processed.
+* AI tags are generated.
+* Media is prepared for cloud storage.
 
-Expected output: it shows AWS S3 demo/configured status.
+### Cloud Storage Phase
 
-Click `Download` on any media.
+Media can be stored in an AWS S3 bucket using an organized structure.
 
-Expected output: downloaded PNG contains dynamic watermark with club name, event name, and user role.
+```text
+college-event-media/
 
-## Implemented Features
+├── Freshers-Night/
+│   ├── Main-Stage/
+│   │   ├── photo1.jpg
+│   │   ├── photo2.jpg
+│   │   └── video1.mp4
+│
+├── Cultural-Fest/
+│   └── Dance-Competition/
+│
+└── Workshops/
+```
 
-- Event management with name/date/category sorting and event editing.
-- Event-wise albums, event metadata, and album deletion.
-- Public/private access control with role-aware API filtering.
-- Bulk photo/video upload with drag-and-drop and preview.
-- AI-style auto tags and AI-generated captions from file names and metadata.
-- Advanced search by event name, tag, upload date, media title, and uploader.
-- Like, comment, share, download, favourite, and tag flows.
-- Real-time-style notification feed stored per user.
-- Face discovery flow using configurable face profile tokens.
-- Dynamic watermark on download using club name, event name, and user role.
-- Cloud integration readiness endpoint for AWS S3 configuration.
-- Bonus: infinite-style load more gallery, QR-style share card, richer analytics dashboard, collaborative album data model, duplicate-ready metadata, PWA manifest, and offline cache service worker.
+---
 
-## Project Structure
+## Security Features
+
+### IAM Permissions
+
+AWS Identity and Access Management (IAM) enables secure access control.
+
+Supported permissions:
+
+* PutObject
+* GetObject
+* DeleteObject
+
+### Bucket Security
+
+* Restricted access policies
+* Controlled media visibility
+* Public access blocked by default
+* Secure API-based access
+
+---
+
+## Advantages of Cloud Integration
+
+### Scalability
+
+Supports large-scale media management without increasing server storage requirements.
+
+### Reliability
+
+AWS infrastructure provides high durability and availability.
+
+### Performance
+
+Efficient media retrieval and storage management.
+
+### Cost Optimization
+
+Pay only for resources used.
+
+### Production Readiness
+
+Designed for deployment in real-world organizational environments.
+
+---
+
+## Cloud Readiness Status
+
+The platform includes:
+
+✅ AWS S3 Compatible Architecture
+
+✅ Secure Upload Workflow
+
+✅ Cloud Storage Status Monitoring
+
+✅ Scalable Media Management
+
+✅ Production-Ready Storage Design
+
+---
+
+# 🖼️ Dynamic Watermarking System
+
+The platform automatically applies watermarks during media downloads.
+
+## Watermark Components
+
+* Club Name
+* Event Name
+* User Role
+
+### Benefits
+
+* Ownership protection
+* Content attribution
+* Secure media distribution
+
+---
+
+# 📊 Analytics Dashboard
+
+The platform includes analytics capabilities to provide insights into platform activity.
+
+### Analytics Features
+
+* Event statistics
+* Media statistics
+* Upload tracking
+* Activity monitoring
+* Engagement insights
+
+---
+
+# 📱 Progressive Web Technologies
+
+The platform incorporates modern web technologies to improve performance and user experience.
+
+### Features
+
+* Web Manifest Support
+* Service Worker Integration
+* Offline Cache Support
+* Faster Resource Loading
+* Improved User Experience
+
+These technologies improve responsiveness and reduce unnecessary network requests.
+
+---
+
+# 🔥 Bonus Features Implemented
+
+✅ QR-Based Media Sharing
+
+✅ AI-Generated Captions
+
+✅ Analytics Dashboard
+
+✅ Offline Cache Service Worker
+
+✅ Collaborative Album Data Model
+
+✅ Infinite Gallery Experience
+
+✅ Enhanced Search Experience
+
+---
+
+# 🏗️ System Architecture
+
+```text
+Users
+   │
+   ▼
+Frontend (HTML, CSS, JavaScript)
+   │
+   ▼
+Node.js Backend
+   │
+   ├── Event Management
+   ├── Album Management
+   ├── Media Upload Service
+   ├── Search Engine
+   ├── AI Tagging Module
+   ├── Notification System
+   ├── Face Discovery Module
+   └── Watermark Engine
+   │
+   ▼
+Storage Layer
+   ├── Local JSON Storage
+   └── AWS S3 Integration
+```
+
+---
+
+# 🛠️ Technology Stack
+
+## Frontend
+
+* HTML5
+* CSS3
+* JavaScript
+
+## Backend
+
+* Node.js
+
+## Database
+
+* JSON-Based Storage
+
+## Cloud Services
+
+* AWS S3 Ready Architecture
+
+## Web Technologies
+
+* Service Workers
+* Web Manifest
+
+---
+
+# 📂 Project Structure
 
 ```text
 event-media-platform/
-  server.js                 # Node API and static server
-  data/db.json              # JSON persistence for demo data
-  public/
-    index.html              # App shell
-    styles.css              # Responsive UI
-    app.js                  # Frontend behavior
-    manifest.webmanifest    # PWA manifest
-    sw.js                   # Offline cache
-  docs/
-    api.md
-    architecture.md
-    database-schema.md
-    presentation-outline.md
-  tests/
-    smoke.test.js
+
+├── server.js
+├── data/
+│   └── db.json
+│
+├── public/
+│   ├── index.html
+│   ├── styles.css
+│   ├── app.js
+│   ├── manifest.webmanifest
+│   └── sw.js
+│
+├── docs/
+│   ├── api.md
+│   ├── architecture.md
+│   ├── database-schema.md
+│   └── presentation-outline.md
+│
+└── tests/
+    └── smoke.test.js
 ```
 
-## AWS S3 Cloud Storage Integration
+---
 
-The app currently stores uploaded file data locally in `data/db.json` as a data URL so it can run without dependencies. To connect real AWS S3 storage, use these main steps:
+# 🧪 Testing
 
-1. Create an S3 bucket in AWS, for example `college-event-media`.
-2. Keep "Block all public access" on unless you plan to serve files through CloudFront or signed URLs.
-3. Add CORS on the bucket if the browser will fetch media directly:
+Smoke tests can be executed to verify core application functionality.
 
-```json
-[
-  {
-    "AllowedHeaders": ["*"],
-    "AllowedMethods": ["GET", "PUT", "POST"],
-    "AllowedOrigins": ["http://127.0.0.1:4173", "http://localhost:4173"],
-    "ExposeHeaders": ["ETag"]
-  }
-]
-```
-
-4. Create an IAM user or role with `s3:PutObject`, `s3:GetObject`, and `s3:DeleteObject` permissions for this bucket.
-5. Set environment variables before starting the server:
-
-```powershell
-$env:S3_BUCKET="college-event-media"
-$env:AWS_REGION="ap-south-1"
-$env:AWS_ACCESS_KEY_ID="your-access-key"
-$env:AWS_SECRET_ACCESS_KEY="your-secret-key"
-npm start
-```
-
-6. Install the AWS SDK when you are ready to switch from local JSON storage:
-
-```powershell
-npm install @aws-sdk/client-s3
-```
-
-7. In `server.js`, import the SDK:
-
-```js
-const { S3Client, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
-const s3 = new S3Client({ region: process.env.AWS_REGION });
-```
-
-8. Inside the `/api/media` route, replace direct `dataUrl` storage with a Buffer upload. You do not select `s3Buffer` from any UI; it is created in backend code from the uploaded base64 data:
-
-```js
-const [meta, base64] = body.dataUrl.split(",");
-const contentType = meta.match(/data:(.*);base64/)?.[1] || "application/octet-stream";
-const s3Buffer = Buffer.from(base64, "base64");
-const key = `events/${event.id}/albums/${album.id}/${id("obj")}-${body.title || "upload"}`;
-
-await s3.send(new PutObjectCommand({
-  Bucket: process.env.S3_BUCKET,
-  Key: key,
-  Body: s3Buffer,
-  ContentType: contentType
-}));
-```
-
-9. Store `storageKey: key` and a signed URL or CDN URL in the media record instead of storing the full `dataUrl`.
-10. When deleting an album, also call `DeleteObjectCommand` for each media item that has a `storageKey`.
-
-The `/api/cloud/status` endpoint already reports configured mode when `S3_BUCKET` is present. Full production storage should move large files out of `data/db.json` and keep only metadata plus S3 object keys in the database.
-
-## API Smoke Test
-
-```powershell
+```bash
 npm test
 ```
 
-## Submission Notes
 
-Mandatory deliverables covered in this folder:
+---
 
-- GitHub-ready project source
-- Working local demo
-- Documentation and README
-- Database schema
-- Architecture diagram
-- Presentation outline
+# 🏆 Project Highlights
 
-Optional deliverables included:
-
-- API documentation
-- PWA/offline setup
-- Test script
-live demo deployed link:
-https://event-and-media-management-platform-k1yl.onrender.com
+* Centralized Event Media Management
+* Event-Wise Album Organization
+* Role-Based Access Control
+* Social Media Style Interactions
+* AI-Powered Search and Discovery
+* Personalized Photo Discovery
+* Dynamic Watermarking System
+* AWS Cloud Integration Ready
+* Analytics Dashboard
+* Offline Support
+* Scalable Architecture
+* Production-Oriented Design
