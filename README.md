@@ -623,13 +623,7 @@ event-media-platform/
 
 ---
 
-# 🧪 Testing
 
-Smoke tests can be executed to verify core application functionality.
-
-```bash
-npm test
-```
 
 
 ---
